@@ -156,7 +156,7 @@ if not results.server:
 		sys.exit(0)
 
 else:
-	if not results.ip == "":
+	if results.ip == "":
 		print bcolors.YELLOW + "[WARN] You defined IP address", results.ip, "but are in listening mode. Ignored." + bcolors.ENDC
 	try:
 		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
