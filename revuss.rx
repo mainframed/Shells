@@ -15,12 +15,16 @@ DO FOREVER
  in = SOCKET('RECV',socketID,10000)
  parse var in s_rc s_data_len s_data_text
  cmd = DELSTR(s_data_text, LENGTH(s_data_text))
-    CALL BPXWUNIX cmd,,out.
+    CALL BPXWUNIX cmd,,out.,oute.
     text = ''
+    texte = ''
     DO i = 1 TO out.0
        text = text||out.i||n
     END
- text = text||r
- rsock = SOCKET('SEND',socketID, text)
+    DO i = 1 TO oute.0
+       texte = texte||oute.i||n
+    END
+    texte = text||texte||r
+ rsock = SOCKET('SEND',socketID, texte)
 END
 return 0
